@@ -5,6 +5,7 @@ import 'core/theme/app_theme.dart';
 import 'features/areas/presentation/screens/areas_screen.dart';
 import 'features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'features/goals/presentation/screens/goals_screen.dart';
+import 'features/habits/presentation/screens/habits_screen.dart';
 
 void main() {
   // Supabase.initialize(...) will be wired here in the "Supabase Sync" milestone.
@@ -44,6 +45,7 @@ class _RootShellState extends State<RootShell> {
     DashboardScreen(),
     AreasScreen(),
     GoalsScreen(),
+    HabitsScreen(),
   ];
 
   @override
@@ -58,6 +60,7 @@ class _RootShellState extends State<RootShell> {
           BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'Today'),
           BottomNavigationBarItem(icon: Icon(Icons.grid_view_rounded), label: 'Areas'),
           BottomNavigationBarItem(icon: Icon(Icons.flag_rounded), label: 'Goals'),
+          BottomNavigationBarItem(icon: Icon(Icons.repeat_rounded), label: 'Habits'),
         ],
       ),
     );
