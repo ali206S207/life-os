@@ -6,6 +6,7 @@ import 'features/areas/presentation/screens/areas_screen.dart';
 import 'features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'features/goals/presentation/screens/goals_screen.dart';
 import 'features/habits/presentation/screens/habits_screen.dart';
+import 'features/statistics/presentation/screens/statistics_screen.dart';
 import 'features/xp/presentation/providers/achievements_provider.dart';
 import 'features/xp/presentation/screens/achievements_screen.dart';
 
@@ -52,6 +53,7 @@ class _RootShellState extends ConsumerState<RootShell> {
     GoalsScreen(),
     HabitsScreen(),
     AchievementsScreen(),
+    StatisticsScreen(),
   ];
 
   @override
@@ -86,6 +88,7 @@ class _RootShellState extends ConsumerState<RootShell> {
           BottomNavigationBarItem(icon: Icon(Icons.flag_rounded), label: 'Goals'),
           BottomNavigationBarItem(icon: Icon(Icons.repeat_rounded), label: 'Habits'),
           BottomNavigationBarItem(icon: Icon(Icons.emoji_events_rounded), label: 'Achievements'),
+          BottomNavigationBarItem(icon: Icon(Icons.bar_chart_rounded), label: 'Stats'),
         ],
       ),
     );
