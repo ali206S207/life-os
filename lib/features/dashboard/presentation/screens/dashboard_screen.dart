@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/widgets/glass_card.dart';
 import '../../../../shared/widgets/animated_progress_ring.dart';
+import '../../../xp/presentation/widgets/xp_bar.dart';
 import '../providers/daily_actions_provider.dart';
 
 /// The main "what should I do right now" landing screen.
@@ -41,6 +42,8 @@ class DashboardScreen extends ConsumerWidget {
                 '${_greeting()}, $userName 👋',
                 style: Theme.of(context).textTheme.displayMedium,
               ),
+              const SizedBox(height: AppSpacing.lg),
+              const XpBar(),
               const SizedBox(height: AppSpacing.xxl),
               Center(
                 child: AnimatedProgressRing(
