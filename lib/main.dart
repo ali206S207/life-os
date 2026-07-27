@@ -7,6 +7,7 @@ import 'core/utils/responsive.dart';
 import 'features/areas/presentation/screens/areas_screen.dart';
 import 'features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'features/goals/presentation/screens/goals_screen.dart';
+import 'features/finance/presentation/screens/finance_screen.dart';
 import 'features/habits/presentation/screens/habits_screen.dart';
 import 'features/reading/presentation/screens/reading_screen.dart';
 import 'features/statistics/presentation/screens/statistics_screen.dart';
@@ -74,12 +75,14 @@ class _RootShellState extends ConsumerState<RootShell> {
     AppNavItem(icon: Icons.emoji_events_rounded, label: 'Achievements'),
     AppNavItem(icon: Icons.bar_chart_rounded, label: 'Stats'),
     AppNavItem(icon: Icons.menu_book_rounded, label: 'Reading'),
+    AppNavItem(icon: Icons.account_balance_wallet_rounded, label: 'Finance'),
   ];
 
   static const _secondaryScreens = [
     AchievementsScreen(),
     StatisticsScreen(),
     ReadingScreen(),
+    FinanceScreen(),
   ];
 
   static const _moreNavItem = AppNavItem(icon: Icons.more_horiz_rounded, label: 'More');
