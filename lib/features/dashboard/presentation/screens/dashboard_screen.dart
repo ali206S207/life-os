@@ -5,6 +5,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/widgets/glass_card.dart';
 import '../../../../shared/widgets/animated_progress_ring.dart';
 import '../../../assistant/presentation/widgets/assistant_suggestion_card.dart';
+import '../../../notifications/presentation/widgets/notification_bell_button.dart';
 import '../../../xp/presentation/widgets/xp_bar.dart';
 import '../providers/daily_actions_provider.dart';
 
@@ -39,9 +40,16 @@ class DashboardScreen extends ConsumerWidget {
               AppSpacing.xxxl,
             ),
             children: [
-              Text(
-                '${_greeting()}, $userName 👋',
-                style: Theme.of(context).textTheme.displayMedium,
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '${_greeting()}, $userName 👋',
+                      style: Theme.of(context).textTheme.displayMedium,
+                    ),
+                  ),
+                  const NotificationBellButton(),
+                ],
               ),
               const SizedBox(height: AppSpacing.lg),
               const XpBar(),
