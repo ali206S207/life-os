@@ -11,6 +11,7 @@ import 'features/finance/presentation/screens/finance_screen.dart';
 import 'features/habits/presentation/screens/habits_screen.dart';
 import 'features/health/presentation/screens/health_screen.dart';
 import 'features/learning/presentation/screens/learning_screen.dart';
+import 'features/projects/presentation/screens/projects_screen.dart';
 import 'features/reading/presentation/screens/reading_screen.dart';
 import 'features/statistics/presentation/screens/statistics_screen.dart';
 import 'features/xp/presentation/providers/achievements_provider.dart';
@@ -80,6 +81,7 @@ class _RootShellState extends ConsumerState<RootShell> {
     AppNavItem(icon: Icons.account_balance_wallet_rounded, label: 'Finance'),
     AppNavItem(icon: Icons.favorite_rounded, label: 'Health'),
     AppNavItem(icon: Icons.school_rounded, label: 'Learning'),
+    AppNavItem(icon: Icons.task_alt_rounded, label: 'Projects'),
   ];
 
   static const _secondaryScreens = [
@@ -89,6 +91,7 @@ class _RootShellState extends ConsumerState<RootShell> {
     FinanceScreen(),
     HealthScreen(),
     LearningScreen(),
+    ProjectsScreen(),
   ];
 
   static const _moreNavItem = AppNavItem(icon: Icons.more_horiz_rounded, label: 'More');
