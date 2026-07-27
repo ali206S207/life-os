@@ -3,9 +3,53 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/widgets/glass_card.dart';
+import '../../../areas/presentation/providers/life_areas_provider.dart';
 import '../../domain/heatmap_day.dart';
 import '../providers/heatmap_provider.dart';
 import '../widgets/heatmap_grid.dart';
+import '../widgets/life_balance_wheel.dart';
+
+class _LifeBalanceSection extends ConsumerWidget {
+  const _LifeBalanceSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final areasAsync = ref.watch(lifeAreasProvider);
+
+    return GlassCard(
+      child: areasAsync.when(
+        loading: () => const SizedBox(
+          height: 200,
+          child: Center(child: CircularProgressIndicator()),
+        ),
+        error: (e, _) => const Text('Could not load life balance.'),
+        data: (areas) {
+          if (areas.isEmpty) return const SizedBox.shrink();
+          final weakest = areas.reduce((a, b) => a.progress < b.progress ? a : b);
+          return Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Life Balance', style: Theme.of(context).textTheme.titleMedium),
+                  Text('⚖️', style: const TextStyle(fontSize: 20)),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Center(child: LifeBalanceWheel(areas: areas)),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                '${weakest.emoji} ${weakest.title} is your most neglected area right now.',
+                style: Theme.of(context).textTheme.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
 
 class StatisticsScreen extends ConsumerWidget {
   const StatisticsScreen({super.key});
@@ -24,6 +68,8 @@ class StatisticsScreen extends ConsumerWidget {
           children: [
             Text('Statistics', style: Theme.of(context).textTheme.displayMedium),
             const SizedBox(height: AppSpacing.md),
+            _LifeBalanceSection(),
+            const SizedBox(height: AppSpacing.lg),
             SizedBox(
               height: 36,
               child: ListView.separated(
