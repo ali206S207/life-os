@@ -8,6 +8,7 @@ import '../../domain/heatmap_day.dart';
 import '../providers/heatmap_provider.dart';
 import '../widgets/heatmap_grid.dart';
 import '../widgets/life_balance_wheel.dart';
+import '../widgets/mood_tracker_card.dart';
 
 class _LifeBalanceSection extends ConsumerWidget {
   const _LifeBalanceSection();
@@ -68,6 +69,8 @@ class StatisticsScreen extends ConsumerWidget {
           children: [
             Text('Statistics', style: Theme.of(context).textTheme.displayMedium),
             const SizedBox(height: AppSpacing.md),
+            const MoodTrackerCard(),
+            const SizedBox(height: AppSpacing.lg),
             _LifeBalanceSection(),
             const SizedBox(height: AppSpacing.lg),
             SizedBox(
