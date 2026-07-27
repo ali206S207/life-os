@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/app_colors.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/app_typography.dart';
+import 'core/utils/responsive.dart';
 import 'features/areas/presentation/screens/areas_screen.dart';
 import 'features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'features/goals/presentation/screens/goals_screen.dart';
@@ -9,6 +11,7 @@ import 'features/habits/presentation/screens/habits_screen.dart';
 import 'features/statistics/presentation/screens/statistics_screen.dart';
 import 'features/xp/presentation/providers/achievements_provider.dart';
 import 'features/xp/presentation/screens/achievements_screen.dart';
+import 'shared/models/app_nav_item.dart';
 
 void main() {
   // Supabase.initialize(...) will be wired here in the "Supabase Sync" milestone.
@@ -31,12 +34,17 @@ class LifeOsApp extends StatelessWidget {
   }
 }
 
-/// Bottom-nav shell hosting the top-level feature screens. As more
-/// modules land (Calendar, Notes, ...), they get their own tab here or
-/// move under in-tab navigation once go_router is wired in.
+/// Root navigation shell, responsive across mobile and desktop/PC:
+/// - Narrow widths (phones): bottom navigation bar, single screen at a time.
+/// - Wide widths (tablet/desktop/PC): a persistent [NavigationRail] on the
+///   left, since a bottom bar reads as a mobile pattern on a PC window.
+///
+/// Both layouts share the same [_screens]/[_navItems] source of truth, so
+/// adding a new module (Calendar, Notes, ...) only means adding one entry
+/// here rather than updating two separate nav widgets.
 ///
 /// Also watches [achievementsProvider] globally so a newly unlocked
-/// achievement surfaces as a toast no matter which tab the user is on.
+/// achievement surfaces as a toast no matter which screen is active.
 class RootShell extends ConsumerStatefulWidget {
   const RootShell({super.key});
 
@@ -54,6 +62,15 @@ class _RootShellState extends ConsumerState<RootShell> {
     HabitsScreen(),
     AchievementsScreen(),
     StatisticsScreen(),
+  ];
+
+  static const _navItems = [
+    AppNavItem(icon: Icons.home_rounded, label: 'Today'),
+    AppNavItem(icon: Icons.grid_view_rounded, label: 'Areas'),
+    AppNavItem(icon: Icons.flag_rounded, label: 'Goals'),
+    AppNavItem(icon: Icons.repeat_rounded, label: 'Habits'),
+    AppNavItem(icon: Icons.emoji_events_rounded, label: 'Achievements'),
+    AppNavItem(icon: Icons.bar_chart_rounded, label: 'Stats'),
   ];
 
   @override
@@ -75,6 +92,42 @@ class _RootShellState extends ConsumerState<RootShell> {
       }
     });
 
+    final isDesktop = AppBreakpoints.isDesktop(context);
+
+    if (isDesktop) {
+      return Scaffold(
+        body: Row(
+          children: [
+            NavigationRail(
+              selectedIndex: _index,
+              onDestinationSelected: (i) => setState(() => _index = i),
+              backgroundColor: AppColors.darkSurface,
+              labelType: AppBreakpoints.isWideDesktop(context)
+                  ? NavigationRailLabelType.none
+                  : NavigationRailLabelType.selected,
+              extended: AppBreakpoints.isWideDesktop(context),
+              minExtendedWidth: 180,
+              leading: const Padding(
+                padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),
+                child: Text('🧭', style: TextStyle(fontSize: 28)),
+              ),
+              destinations: [
+                for (final item in _navItems)
+                  NavigationRailDestination(
+                    icon: Icon(item.icon),
+                    label: Text(item.label),
+                  ),
+              ],
+            ),
+            const VerticalDivider(width: 1, color: AppColors.darkBorder),
+            Expanded(
+              child: IndexedStack(index: _index, children: _screens),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       body: IndexedStack(index: _index, children: _screens),
       bottomNavigationBar: BottomNavigationBar(
@@ -82,13 +135,9 @@ class _RootShellState extends ConsumerState<RootShell> {
         onTap: (i) => setState(() => _index = i),
         selectedItemColor: AppColors.primary,
         type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'Today'),
-          BottomNavigationBarItem(icon: Icon(Icons.grid_view_rounded), label: 'Areas'),
-          BottomNavigationBarItem(icon: Icon(Icons.flag_rounded), label: 'Goals'),
-          BottomNavigationBarItem(icon: Icon(Icons.repeat_rounded), label: 'Habits'),
-          BottomNavigationBarItem(icon: Icon(Icons.emoji_events_rounded), label: 'Achievements'),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart_rounded), label: 'Stats'),
+        items: [
+          for (final item in _navItems)
+            BottomNavigationBarItem(icon: Icon(item.icon), label: item.label),
         ],
       ),
     );
