@@ -13,6 +13,7 @@ import 'features/statistics/presentation/screens/statistics_screen.dart';
 import 'features/xp/presentation/providers/achievements_provider.dart';
 import 'features/xp/presentation/screens/achievements_screen.dart';
 import 'shared/models/app_nav_item.dart';
+import 'shared/widgets/more_hub_screen.dart';
 
 void main() {
   // Supabase.initialize(...) will be wired here in the "Supabase Sync" milestone.
@@ -36,13 +37,12 @@ class LifeOsApp extends StatelessWidget {
 }
 
 /// Root navigation shell, responsive across mobile and desktop/PC:
-/// - Narrow widths (phones): bottom navigation bar, single screen at a time.
-/// - Wide widths (tablet/desktop/PC): a persistent [NavigationRail] on the
-///   left, since a bottom bar reads as a mobile pattern on a PC window.
-///
-/// Both layouts share the same [_screens]/[_navItems] source of truth, so
-/// adding a new module (Calendar, Notes, ...) only means adding one entry
-/// here rather than updating two separate nav widgets.
+/// - Narrow widths (phones): a 4-item bottom bar (Today/Areas/Goals/Habits)
+///   plus a 5th "More" destination that opens [MoreHubScreen] for
+///   everything else — a bottom bar with 7+ items stops being usable.
+/// - Wide widths (tablet/desktop/PC): a persistent [NavigationRail] with
+///   every destination shown directly, since vertical space isn't scarce
+///   there and a "More" indirection would just add a click for no reason.
 ///
 /// Also watches [achievementsProvider] globally so a newly unlocked
 /// achievement surfaces as a toast no matter which screen is active.
@@ -56,29 +56,40 @@ class RootShell extends ConsumerStatefulWidget {
 class _RootShellState extends ConsumerState<RootShell> {
   int _index = 0;
 
-  // TODO(life-os): 7 top-level destinations is getting cramped for a
-  // mobile bottom bar. A "Navigation Redesign" milestone should
-  // introduce a "More" hub (Achievements/Stats/Reading/etc. grouped
-  // there) so Today/Areas/Goals/Habits stay as the primary 4 tabs.
-  static const _screens = [
+  static const _primaryScreens = [
     DashboardScreen(),
     AreasScreen(),
     GoalsScreen(),
     HabitsScreen(),
+  ];
+
+  static const _primaryNavItems = [
+    AppNavItem(icon: Icons.home_rounded, label: 'Today'),
+    AppNavItem(icon: Icons.grid_view_rounded, label: 'Areas'),
+    AppNavItem(icon: Icons.flag_rounded, label: 'Goals'),
+    AppNavItem(icon: Icons.repeat_rounded, label: 'Habits'),
+  ];
+
+  static const _secondaryNavItems = [
+    AppNavItem(icon: Icons.emoji_events_rounded, label: 'Achievements'),
+    AppNavItem(icon: Icons.bar_chart_rounded, label: 'Stats'),
+    AppNavItem(icon: Icons.menu_book_rounded, label: 'Reading'),
+  ];
+
+  static const _secondaryScreens = [
     AchievementsScreen(),
     StatisticsScreen(),
     ReadingScreen(),
   ];
 
-  static const _navItems = [
-    AppNavItem(icon: Icons.home_rounded, label: 'Today'),
-    AppNavItem(icon: Icons.grid_view_rounded, label: 'Areas'),
-    AppNavItem(icon: Icons.flag_rounded, label: 'Goals'),
-    AppNavItem(icon: Icons.repeat_rounded, label: 'Habits'),
-    AppNavItem(icon: Icons.emoji_events_rounded, label: 'Achievements'),
-    AppNavItem(icon: Icons.bar_chart_rounded, label: 'Stats'),
-    AppNavItem(icon: Icons.menu_book_rounded, label: 'Reading'),
-  ];
+  static const _moreNavItem = AppNavItem(icon: Icons.more_horiz_rounded, label: 'More');
+
+  void _openSecondaryScreen(AppNavItem item) {
+    final i = _secondaryNavItems.indexOf(item);
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => _secondaryScreens[i]),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +113,8 @@ class _RootShellState extends ConsumerState<RootShell> {
     final isDesktop = AppBreakpoints.isDesktop(context);
 
     if (isDesktop) {
+      final allItems = [..._primaryNavItems, ..._secondaryNavItems];
+      final allScreens = [..._primaryScreens, ..._secondaryScreens];
       return Scaffold(
         body: Row(
           children: [
@@ -119,7 +132,7 @@ class _RootShellState extends ConsumerState<RootShell> {
                 child: Text('🧭', style: TextStyle(fontSize: 28)),
               ),
               destinations: [
-                for (final item in _navItems)
+                for (final item in allItems)
                   NavigationRailDestination(
                     icon: Icon(item.icon),
                     label: Text(item.label),
@@ -128,23 +141,38 @@ class _RootShellState extends ConsumerState<RootShell> {
             ),
             const VerticalDivider(width: 1, color: AppColors.darkBorder),
             Expanded(
-              child: IndexedStack(index: _index, children: _screens),
+              child: IndexedStack(index: _index, children: allScreens),
             ),
           ],
         ),
       );
     }
 
+    final mobileIndex = _index < _primaryScreens.length ? _index : 0;
     return Scaffold(
-      body: IndexedStack(index: _index, children: _screens),
+      body: IndexedStack(index: mobileIndex, children: _primaryScreens),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _index,
-        onTap: (i) => setState(() => _index = i),
+        currentIndex: mobileIndex,
+        onTap: (i) {
+          if (i == _primaryNavItems.length) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => MoreHubScreen(
+                  items: _secondaryNavItems,
+                  onSelect: _openSecondaryScreen,
+                ),
+              ),
+            );
+            return;
+          }
+          setState(() => _index = i);
+        },
         selectedItemColor: AppColors.primary,
         type: BottomNavigationBarType.fixed,
         items: [
-          for (final item in _navItems)
+          for (final item in _primaryNavItems)
             BottomNavigationBarItem(icon: Icon(item.icon), label: item.label),
+          BottomNavigationBarItem(icon: Icon(_moreNavItem.icon), label: _moreNavItem.label),
         ],
       ),
     );
