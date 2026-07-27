@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/widgets/glass_card.dart';
 import '../../../../shared/widgets/animated_progress_ring.dart';
+import '../../../assistant/presentation/widgets/assistant_suggestion_card.dart';
 import '../../../xp/presentation/widgets/xp_bar.dart';
 import '../providers/daily_actions_provider.dart';
 
@@ -44,6 +45,8 @@ class DashboardScreen extends ConsumerWidget {
               ),
               const SizedBox(height: AppSpacing.lg),
               const XpBar(),
+              const SizedBox(height: AppSpacing.md),
+              const AssistantSuggestionCard(),
               const SizedBox(height: AppSpacing.xxl),
               Center(
                 child: AnimatedProgressRing(
