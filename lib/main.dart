@@ -8,6 +8,7 @@ import 'features/areas/presentation/screens/areas_screen.dart';
 import 'features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'features/goals/presentation/screens/goals_screen.dart';
 import 'features/habits/presentation/screens/habits_screen.dart';
+import 'features/reading/presentation/screens/reading_screen.dart';
 import 'features/statistics/presentation/screens/statistics_screen.dart';
 import 'features/xp/presentation/providers/achievements_provider.dart';
 import 'features/xp/presentation/screens/achievements_screen.dart';
@@ -55,6 +56,10 @@ class RootShell extends ConsumerStatefulWidget {
 class _RootShellState extends ConsumerState<RootShell> {
   int _index = 0;
 
+  // TODO(life-os): 7 top-level destinations is getting cramped for a
+  // mobile bottom bar. A "Navigation Redesign" milestone should
+  // introduce a "More" hub (Achievements/Stats/Reading/etc. grouped
+  // there) so Today/Areas/Goals/Habits stay as the primary 4 tabs.
   static const _screens = [
     DashboardScreen(),
     AreasScreen(),
@@ -62,6 +67,7 @@ class _RootShellState extends ConsumerState<RootShell> {
     HabitsScreen(),
     AchievementsScreen(),
     StatisticsScreen(),
+    ReadingScreen(),
   ];
 
   static const _navItems = [
@@ -71,6 +77,7 @@ class _RootShellState extends ConsumerState<RootShell> {
     AppNavItem(icon: Icons.repeat_rounded, label: 'Habits'),
     AppNavItem(icon: Icons.emoji_events_rounded, label: 'Achievements'),
     AppNavItem(icon: Icons.bar_chart_rounded, label: 'Stats'),
+    AppNavItem(icon: Icons.menu_book_rounded, label: 'Reading'),
   ];
 
   @override
