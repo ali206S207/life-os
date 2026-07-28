@@ -5,6 +5,7 @@ import 'core/theme/app_theme.dart';
 import 'core/theme/app_typography.dart';
 import 'core/utils/responsive.dart';
 import 'features/areas/presentation/screens/areas_screen.dart';
+import 'features/calendar/presentation/screens/calendar_screen.dart';
 import 'features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'features/goals/presentation/screens/goals_screen.dart';
 import 'features/finance/presentation/screens/finance_screen.dart';
@@ -88,6 +89,7 @@ class _RootShellState extends ConsumerState<RootShell> {
     AppNavItem(icon: Icons.task_alt_rounded, label: 'Projects'),
     AppNavItem(icon: Icons.notes_rounded, label: 'Notes'),
     AppNavItem(icon: Icons.settings_rounded, label: 'Settings'),
+    AppNavItem(icon: Icons.calendar_month_rounded, label: 'Calendar'),
   ];
 
   static const _secondaryScreens = [
@@ -100,6 +102,7 @@ class _RootShellState extends ConsumerState<RootShell> {
     ProjectsScreen(),
     NotesScreen(),
     SettingsScreen(),
+    CalendarScreen(),
   ];
 
   static const _moreNavItem = AppNavItem(icon: Icons.more_horiz_rounded, label: 'More');
