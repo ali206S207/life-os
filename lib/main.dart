@@ -14,6 +14,8 @@ import 'features/learning/presentation/screens/learning_screen.dart';
 import 'features/notes/presentation/screens/notes_screen.dart';
 import 'features/projects/presentation/screens/projects_screen.dart';
 import 'features/reading/presentation/screens/reading_screen.dart';
+import 'features/settings/presentation/providers/settings_provider.dart';
+import 'features/settings/presentation/screens/settings_screen.dart';
 import 'features/statistics/presentation/screens/statistics_screen.dart';
 import 'features/xp/presentation/providers/achievements_provider.dart';
 import 'features/xp/presentation/screens/achievements_screen.dart';
@@ -25,15 +27,16 @@ void main() {
   runApp(const ProviderScope(child: LifeOsApp()));
 }
 
-class LifeOsApp extends StatelessWidget {
+class LifeOsApp extends ConsumerWidget {
   const LifeOsApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
     return MaterialApp(
       title: 'Life OS',
       debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.dark,
+      themeMode: themeMode,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       home: const RootShell(),
@@ -84,6 +87,7 @@ class _RootShellState extends ConsumerState<RootShell> {
     AppNavItem(icon: Icons.school_rounded, label: 'Learning'),
     AppNavItem(icon: Icons.task_alt_rounded, label: 'Projects'),
     AppNavItem(icon: Icons.notes_rounded, label: 'Notes'),
+    AppNavItem(icon: Icons.settings_rounded, label: 'Settings'),
   ];
 
   static const _secondaryScreens = [
@@ -95,6 +99,7 @@ class _RootShellState extends ConsumerState<RootShell> {
     LearningScreen(),
     ProjectsScreen(),
     NotesScreen(),
+    SettingsScreen(),
   ];
 
   static const _moreNavItem = AppNavItem(icon: Icons.more_horiz_rounded, label: 'More');
