@@ -6,9 +6,12 @@
 > one interactive, visually engaging dashboard built around
 > **Goals → Systems → Daily Actions → Progress**.
 
-Status: 🚧 **Early development.** This repo is being built milestone by
-milestone (see [Roadmap](#roadmap)). The current milestone implements the
-project foundation, design system, and a fully interactive Dashboard.
+Status: 🚧 **Active development.** All UI/UX modules from the original
+spec are implemented end-to-end with realistic local/mock data (see
+[Roadmap](#roadmap)). The remaining major milestone is **Supabase
+Sync** — wiring real auth and persistence in place of the local
+repositories, so every module already has a clean seam for that (see
+[Architecture](#-architecture)).
 
 ---
 
@@ -18,24 +21,30 @@ project foundation, design system, and a fully interactive Dashboard.
 - **Design system** — dark-mode-first theme, glassmorphism cards,
   gradient accents, typography and spacing tokens.
 - **Dashboard** — live greeting, animated circular progress ring,
-  interactive "Today" action list with tap-to-complete and instant
-  progress/XP recalculation.
+  interactive "Today" action list, drag-and-drop **customizable
+  widgets** (XP bar / Assistant / Progress ring / Today's actions).
+- **Life Areas** — 8 core areas with progress, XP, level, streaks.
+- **Goals** — auto-linked systems, weighted progress, radial dependency graph.
+- **Habits** — streaks, best streak, difficulty, miss history.
+- **XP & Level system** — cross-feature XP aggregation, animated XP bar.
+- **Achievements** — unlock conditions derived live from habits/goals/level.
+- **Statistics** — GitHub-style heatmap (6 switchable metrics), Life
+  Balance radar chart, Mood tracking with pattern insights.
+- **AI Assistant** — rule-based proactive suggestions from live app state.
+- **Smart Notifications** — non-intrusive inbox, unread badge.
+- **Reading, Learning, Projects, Finance, Health** modules.
+- **Notes** — markdown editor with edit/preview toggle, tags.
+- **Calendar** — month grid, agenda, drag-and-drop rescheduling.
+- **Universal Search** — federated search across Goals/Habits/Notes/Projects/Books/Courses.
+- **Settings** — live Dark/Light/System theme switching.
+- **Responsive shell** — NavigationRail for desktop/PC, bottom nav + More hub for mobile.
 
-### Planned (see Roadmap)
-- Life Areas with per-area progress, XP, and streaks
-- Goals system with auto-linked systems and dependency graphs
-- Interactive drag-and-drop daily timeline
-- XP & Level system, achievements
-- GitHub-style heatmap (workout / study / habits / sleep / mood)
-- Life Balance radar chart
-- Mood tracking with pattern insights
-- Proactive AI assistant
-- Statistics (weekly / monthly / yearly) with trends
-- Smart, non-intrusive notifications
-- Habits, Calendar, Universal Search, Notes (markdown), Finance,
-  Health, Reading, Learning, Projects modules
-- Customizable dashboard widgets
-- Supabase-backed sync with offline-first local cache
+### Planned
+- **Supabase Sync** — real auth + persistence behind the existing
+  repository interfaces (offline-first, Hive cache + cloud sync)
+- OS-level scheduled push notifications (`flutter_local_notifications`)
+- Deep-linking individual search results to their exact item (currently
+  routes to the parent module screen for Habits/Books/Courses/Projects)
 
 ---
 
@@ -138,29 +147,29 @@ Development proceeds milestone by milestone, each with its own commit:
 - [x] Initial project setup
 - [x] Design System
 - [x] Dashboard
-- [ ] Life Areas
-- [ ] Goals Module
-- [ ] Habits Module
-- [ ] Daily Timeline (drag & drop)
-- [ ] XP & Level System
-- [ ] Achievements
-- [ ] Heatmap
-- [ ] Life Balance Wheel
-- [ ] Mood Tracking
-- [ ] AI Assistant
-- [ ] Statistics
-- [ ] Smart Notifications
-- [ ] Calendar
-- [ ] Universal Search
-- [ ] Notes (markdown)
-- [ ] Finance
-- [ ] Health
-- [ ] Reading
-- [ ] Learning
-- [ ] Projects
-- [ ] Customizable Widgets
+- [x] Life Areas
+- [x] Goals Module
+- [x] Habits Module
+- [x] XP & Level System
+- [x] Achievements
+- [x] Heatmap
+- [x] Life Balance Wheel
+- [x] Mood Tracking
+- [x] AI Assistant
+- [x] Smart Notifications
+- [x] Reading Module
+- [x] Navigation Redesign (responsive: mobile + desktop/PC)
+- [x] Finance Module
+- [x] Health Module
+- [x] Learning Module
+- [x] Projects Module
+- [x] Notes (markdown)
+- [x] Universal Search
+- [x] Settings
+- [x] Customizable Widgets
+- [x] Calendar (drag & drop)
 - [ ] Supabase Sync (offline-first)
-- [ ] Settings
+- [ ] OS-level scheduled push notifications
 - [ ] Bug Fixes / UI Polish
 
 ---
