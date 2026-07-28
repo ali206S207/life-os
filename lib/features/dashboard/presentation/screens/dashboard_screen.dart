@@ -6,6 +6,7 @@ import '../../../../shared/widgets/glass_card.dart';
 import '../../../../shared/widgets/animated_progress_ring.dart';
 import '../../../assistant/presentation/widgets/assistant_suggestion_card.dart';
 import '../../../notifications/presentation/widgets/notification_bell_button.dart';
+import '../../../search/presentation/screens/search_screen.dart';
 import '../../../xp/presentation/widgets/xp_bar.dart';
 import '../providers/daily_actions_provider.dart';
 
@@ -46,6 +47,12 @@ class DashboardScreen extends ConsumerWidget {
                     child: Text(
                       '${_greeting()}, $userName 👋',
                       style: Theme.of(context).textTheme.displayMedium,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.search_rounded, color: AppColors.textPrimary),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const SearchScreen()),
                     ),
                   ),
                   const NotificationBellButton(),
