@@ -1,10 +1,6 @@
 Building Windows application...                                 
-lib/features/xp/presentation/providers/xp_provider.dart(4,8): error GFAA2A68C: Error when reading 'lib/features/xp/presentation/domain/xp_level_calculator.dart': The system cannot find the path specified [D:\a\life-os\life-os\build\windows\x64\flutter\flutter_assemble.vcxproj]
-lib/features/xp/presentation/providers/xp_provider.dart(53,12): error GC9768DF9: Undefined name 'XpLevelCalculator'. [D:\a\life-os\life-os\build\windows\x64\flutter\flutter_assemble.vcxproj]
-lib/features/xp/presentation/providers/xp_provider.dart(54,18): error GC9768DF9: Undefined name 'XpLevelCalculator'. [D:\a\life-os\life-os\build\windows\x64\flutter\flutter_assemble.vcxproj]
-lib/features/xp/presentation/providers/xp_provider.dart(56,46): error GC9768DF9: Undefined name 'XpLevelCalculator'. [D:\a\life-os\life-os\build\windows\x64\flutter\flutter_assemble.vcxproj]
-lib/features/xp/presentation/providers/xp_provider.dart(56,9): error GC9768DF9: Undefined name 'XpLevelCalculator'. [D:\a\life-os\life-os\build\windows\x64\flutter\flutter_assemble.vcxproj]
-lib/features/xp/presentation/providers/xp_provider.dart(57,15): error GC9768DF9: Undefined name 'XpLevelCalculator'. [D:\a\life-os\life-os\build\windows\x64\flutter\flutter_assemble.vcxproj]
-C:\Program Files\Microsoft Visual Studio\18\Enterprise\MSBuild\Microsoft\VC\v180\Microsoft.CppCommon.targets(254,5): error MSB8066: Custom build for 'D:\a\life-os\life-os\build\windows\x64\CMakeFiles\4e12513f6e510ee657d58b0dec312ab0\flutter_windows.dll.rule;D:\a\life-os\life-os\build\windows\x64\CMakeFiles\c8fde27912bd0525c811751d8a140e04\flutter_assemble.rule;D:\a\life-os\life-os\windows\flutter\CMakeLists.txt' exited with code 1. [D:\a\life-os\life-os\build\windows\x64\flutter\flutter_assemble.vcxproj]
-Building Windows application...                                    33.9s
+CUSTOMBUILD : error : unable to find directory entry in pubspec.yaml: D:\a\life-os\life-os\assets\images\ [D:\a\life-os\life-os\build\windows\x64\flutter\flutter_assemble.vcxproj]
+CUSTOMBUILD : error : unable to find directory entry in pubspec.yaml: D:\a\life-os\life-os\assets\icons\ [D:\a\life-os\life-os\build\windows\x64\flutter\flutter_assemble.vcxproj]
+C:\Program Files\Microsoft Visual Studio\18\Enterprise\MSBuild\Microsoft\VC\v180\Microsoft.CppCommon.targets(254,5): error MSB8066: Custom build for 'D:\a\life-os\life-os\build\windows\x64\CMakeFiles\4e12513f6e510ee657d58b0dec312ab0\flutter_windows.dll.rule;D:\a\life-os\life-os\build\windows\x64\CMakeFiles\c8fde27912bd0525c811751d8a140e04\flutter_assemble.rule;D:\a\life-os\life-os\windows\flutter\CMakeLists.txt' exited with code -1. [D:\a\life-os\life-os\build\windows\x64\flutter\flutter_assemble.vcxproj]
+Building Windows application...                                    73.6s
 Build process failed.
