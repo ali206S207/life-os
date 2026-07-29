@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../dashboard/presentation/providers/daily_actions_provider.dart';
 import '../../../habits/presentation/providers/habits_provider.dart';
-import '../domain/xp_level_calculator.dart';
+import '../../domain/xp_level_calculator.dart';
 
 /// Lifetime XP banked from *previous* days (i.e. everything before today).
 /// A real backend would persist this via Supabase/Hive; for now it's a
