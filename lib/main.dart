@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'core/config/supabase_config.dart';
 import 'core/theme/app_colors.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/app_typography.dart';
 import 'core/utils/responsive.dart';
 import 'features/areas/presentation/screens/areas_screen.dart';
+import 'features/auth/presentation/screens/auth_gate.dart';
 import 'features/calendar/presentation/screens/calendar_screen.dart';
 import 'features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'features/goals/presentation/screens/goals_screen.dart';
@@ -23,8 +26,12 @@ import 'features/xp/presentation/screens/achievements_screen.dart';
 import 'shared/models/app_nav_item.dart';
 import 'shared/widgets/more_hub_screen.dart';
 
-void main() {
-  // Supabase.initialize(...) will be wired here in the "Supabase Sync" milestone.
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Supabase.initialize(
+    url: SupabaseConfig.url,
+    anonKey: SupabaseConfig.anonKey,
+  );
   runApp(const ProviderScope(child: LifeOsApp()));
 }
 
@@ -40,7 +47,7 @@ class LifeOsApp extends ConsumerWidget {
       themeMode: themeMode,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      home: const RootShell(),
+      home: const AuthGate(child: RootShell()),
     );
   }
 }

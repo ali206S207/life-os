@@ -2,13 +2,27 @@ import '../domain/goal.dart';
 
 abstract class GoalsRepository {
   Future<List<Goal>> fetchGoals();
+
+  /// Persists one linked system's updated current value. The Local
+  /// implementation no-ops; the Supabase implementation writes it back.
+  Future<void> persistSystemValue(String systemId, double newValue);
 }
 
 class LocalGoalsRepository implements GoalsRepository {
   @override
   Future<List<Goal>> fetchGoals() async {
     await Future.delayed(const Duration(milliseconds: 250));
+    return seedGoals();
+  }
 
+  @override
+  Future<void> persistSystemValue(String systemId, double newValue) async {
+    // No-op for the local/offline implementation.
+  }
+
+  /// Shared seed data — also used by [SupabaseGoalsRepository] to
+  /// populate a brand-new account's first sign-in with starter goals.
+  static List<Goal> seedGoals() {
     return const [
       Goal(
         id: 'g1',

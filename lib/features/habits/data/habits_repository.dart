@@ -2,12 +2,30 @@ import '../domain/habit.dart';
 
 abstract class HabitsRepository {
   Future<List<Habit>> fetchHabits();
+
+  /// Persists a single habit's updated streak/done state. The Local
+  /// implementation no-ops (state already lives in the Notifier); the
+  /// Supabase implementation writes the row back.
+  Future<void> persistToggle(Habit habit);
 }
 
 class LocalHabitsRepository implements HabitsRepository {
   @override
   Future<List<Habit>> fetchHabits() async {
     await Future.delayed(const Duration(milliseconds: 250));
+    return seedHabits();
+  }
+
+  @override
+  Future<void> persistToggle(Habit habit) async {
+    // No-op: state already lives in the Notifier for the local/offline
+    // implementation. The Supabase implementation overrides this to
+    // actually write the row back.
+  }
+
+  /// Shared seed data — also used by [SupabaseHabitsRepository] to
+  /// populate a brand-new account's first sign-in with starter habits.
+  static List<Habit> seedHabits() {
     final now = DateTime.now();
 
     return [

@@ -7,11 +7,14 @@
 > **Goals → Systems → Daily Actions → Progress**.
 
 Status: 🚧 **Active development.** All UI/UX modules from the original
-spec are implemented end-to-end with realistic local/mock data (see
-[Roadmap](#roadmap)). The remaining major milestone is **Supabase
-Sync** — wiring real auth and persistence in place of the local
-repositories, so every module already has a clean seam for that (see
-[Architecture](#-architecture)).
+spec are implemented, and **Supabase Sync (Phase 1)** is live: real
+email/password auth gates the app, and Goals + Habits persist to a
+real Postgres database with owner-only Row Level Security. Remaining
+modules (Notes, Projects, Finance, Health, ...) still run on local/mock
+data behind the same repository interfaces — wiring each one to
+Supabase is now a matter of writing one more `Supabase*Repository`
+class per module, following the pattern already established for Goals
+and Habits.
 
 ---
 
@@ -40,8 +43,12 @@ repositories, so every module already has a clean seam for that (see
 - **Responsive shell** — NavigationRail for desktop/PC, bottom nav + More hub for mobile.
 
 ### Planned
-- **Supabase Sync** — real auth + persistence behind the existing
-  repository interfaces (offline-first, Hive cache + cloud sync)
+- **Supabase Sync (remaining modules)** — Notes, Projects, Finance,
+  Health, Reading, Learning, Calendar, Life Areas, and Mood/Statistics
+  still read local/mock data; Goals and Habits are the reference
+  implementation for wiring the rest.
+- Offline-first local cache (Hive) sitting in front of the Supabase
+  repositories, for true offline support
 - OS-level scheduled push notifications (`flutter_local_notifications`)
 - Deep-linking individual search results to their exact item (currently
   routes to the parent module screen for Habits/Books/Courses/Projects)
@@ -127,10 +134,14 @@ dart run build_runner build --delete-conflicting-outputs
 flutter run
 ```
 
-### Environment
-Supabase credentials will be required once the Supabase-sync milestone
-lands. These will be read from a local `.env` file (already gitignored)
-— never commit real keys.
+### Backend
+The app is wired to a real Supabase project. Connection details live in
+`lib/core/config/supabase_config.dart` — the anon/publishable key is
+safe to ship in client code by design (it's constrained entirely by
+Row Level Security policies, unlike the secret `service_role` key,
+which must never appear here). Life OS's tables are prefixed `lifeos_`
+in the `public` schema, isolated by owner-only RLS from any other
+tables in the same project.
 
 ---
 
@@ -168,7 +179,9 @@ Development proceeds milestone by milestone, each with its own commit:
 - [x] Settings
 - [x] Customizable Widgets
 - [x] Calendar (drag & drop)
-- [ ] Supabase Sync (offline-first)
+- [x] Supabase Sync — Phase 1 (auth + Goals + Habits)
+- [ ] Supabase Sync — remaining modules
+- [ ] Offline-first local cache (Hive)
 - [ ] OS-level scheduled push notifications
 - [ ] Bug Fixes / UI Polish
 

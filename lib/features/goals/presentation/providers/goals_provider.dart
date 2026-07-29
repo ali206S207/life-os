@@ -1,9 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../data/goals_repository.dart';
+import '../../data/supabase_goals_repository.dart';
 import '../../domain/goal.dart';
 
 final goalsRepositoryProvider = Provider<GoalsRepository>((ref) {
-  return LocalGoalsRepository();
+  return SupabaseGoalsRepository(ref.watch(supabaseClientProvider));
 });
 
 class GoalsNotifier extends AsyncNotifier<List<Goal>> {
@@ -15,7 +18,8 @@ class GoalsNotifier extends AsyncNotifier<List<Goal>> {
   /// Updates one linked system's current value. The parent goal's
   /// progress is a derived getter, so it recalculates automatically —
   /// this is the "every update should automatically affect the goal
-  /// progress" behavior from the spec.
+  /// progress" behavior from the spec. Applied optimistically, then
+  /// persisted to Supabase in the background.
   void updateSystemValue(String goalId, String systemId, double newValue) {
     state.whenData((goals) {
       state = AsyncValue.data([
@@ -37,6 +41,10 @@ class GoalsNotifier extends AsyncNotifier<List<Goal>> {
           else
             goal,
       ]);
+    });
+
+    ref.read(goalsRepositoryProvider).persistSystemValue(systemId, newValue).catchError((e) {
+      debugPrint('Failed to persist system value: $e');
     });
   }
 

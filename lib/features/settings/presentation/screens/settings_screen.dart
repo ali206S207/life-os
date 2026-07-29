@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/widgets/glass_card.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
 import '../providers/settings_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -12,6 +13,7 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeModeProvider);
     final notificationsEnabled = ref.watch(notificationsEnabledProvider);
+    final user = ref.watch(currentUserProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -36,12 +38,17 @@ class SettingsScreen extends ConsumerWidget {
                     child: const Text('👤', style: TextStyle(fontSize: 22)),
                   ),
                   const SizedBox(width: AppSpacing.md),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Ali', style: Theme.of(context).textTheme.titleLarge),
-                      Text('Life OS account', style: Theme.of(context).textTheme.bodyMedium),
-                    ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Ali', style: Theme.of(context).textTheme.titleLarge),
+                        Text(
+                          user?.email ?? 'Life OS account',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -97,6 +104,19 @@ class SettingsScreen extends ConsumerWidget {
                   Text('Life OS', style: Theme.of(context).textTheme.bodyLarge),
                   Text('v0.1.0', style: Theme.of(context).textTheme.bodyMedium),
                 ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: () => ref.read(supabaseClientProvider).auth.signOut(),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.danger,
+                  side: const BorderSide(color: AppColors.danger),
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                ),
+                child: const Text('Sign Out'),
               ),
             ),
           ],
