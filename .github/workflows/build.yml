@@ -9,6 +9,9 @@ on:
     branches: [main]
   workflow_dispatch: {}
 
+permissions:
+  contents: write
+
 jobs:
   build-android:
     name: Android APK
@@ -22,9 +25,24 @@ jobs:
 
       - run: flutter pub get
 
-      - run: flutter build apk --release
+      - name: Build APK
+        run: flutter build apk --release 2>&1 | tee /tmp/android-build.log
+
+      - name: Upload debug log on failure
+        if: failure()
+        run: |
+          git config user.name "ci-bot"
+          git config user.email "ci@life-os.local"
+          git fetch origin ci-debug-logs 2>/dev/null || true
+          git checkout -B ci-debug-logs
+          mkdir -p ci_logs
+          tail -c 60000 /tmp/android-build.log > ci_logs/android-build.log
+          git add ci_logs/android-build.log
+          git commit -m "CI: android build log [skip ci]" || true
+          git push --force origin ci-debug-logs
 
       - uses: actions/upload-artifact@v4
+        if: success()
         with:
           name: life-os-android-apk
           path: build/app/outputs/flutter-apk/app-release.apk
@@ -44,9 +62,26 @@ jobs:
 
       - run: flutter pub get
 
-      - run: flutter build windows --release
+      - name: Build Windows
+        shell: bash
+        run: flutter build windows --release 2>&1 | tee /tmp/windows-build.log
+
+      - name: Upload debug log on failure
+        if: failure()
+        shell: bash
+        run: |
+          git config user.name "ci-bot"
+          git config user.email "ci@life-os.local"
+          git fetch origin ci-debug-logs 2>/dev/null || true
+          git checkout -B ci-debug-logs
+          mkdir -p ci_logs
+          tail -c 60000 /tmp/windows-build.log > ci_logs/windows-build.log
+          git add ci_logs/windows-build.log
+          git commit -m "CI: windows build log [skip ci]" || true
+          git push --force origin ci-debug-logs
 
       - uses: actions/upload-artifact@v4
+        if: success()
         with:
           name: life-os-windows-build
           path: build/windows/x64/runner/Release/
