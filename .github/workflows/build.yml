@@ -30,19 +30,30 @@ jobs:
 
       - name: Upload debug log on failure
         if: failure()
+        shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
         run: |
-          git config user.name "ci-bot"
-          git config user.email "ci@life-os.local"
-          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
-          git fetch origin ci-debug-logs 2>/dev/null || true
-          git checkout -B ci-debug-logs
-          mkdir -p ci_logs
-          tail -c 60000 /tmp/android-build.log > ci_logs/android-build.log
-          git add ci_logs/android-build.log
-          git commit -m "CI: android build log [skip ci]" || true
-          git push --force origin ci-debug-logs
+          API="https://api.github.com/repos/$REPO"
+          # Ensure the ci-debug-logs branch exists (created once, off main,
+          # and outside the `branches: [main]` trigger so pushing log
+          # updates to it never re-triggers this workflow).
+          if ! curl -s -f -H "Authorization: token $GH_TOKEN" "$API/git/ref/heads/ci-debug-logs" > /dev/null; then
+            MAIN_SHA=$(curl -s -H "Authorization: token $GH_TOKEN" "$API/git/ref/heads/main" | python3 -c "import json,sys; print(json.load(sys.stdin)['object']['sha'])")
+            curl -s -X POST -H "Authorization: token $GH_TOKEN" "$API/git/refs" \
+              -d "{\"ref\":\"refs/heads/ci-debug-logs\",\"sha\":\"$MAIN_SHA\"}" > /dev/null
+          fi
+          tail -c 60000 /tmp/android-build.log > /tmp/android-build.trimmed.log
+          CONTENT=$(base64 -w0 /tmp/android-build.trimmed.log 2>/dev/null || base64 /tmp/android-build.trimmed.log | tr -d '\n')
+          EXISTING_SHA=$(curl -s -H "Authorization: token $GH_TOKEN" "$API/contents/ci_logs/android-build.log?ref=ci-debug-logs" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('sha',''))" 2>/dev/null || echo "")
+          if [ -n "$EXISTING_SHA" ]; then
+            curl -s -X PUT -H "Authorization: token $GH_TOKEN" "$API/contents/ci_logs/android-build.log" \
+              -d "{\"message\":\"CI: android build log\",\"content\":\"$CONTENT\",\"branch\":\"ci-debug-logs\",\"sha\":\"$EXISTING_SHA\"}" > /dev/null
+          else
+            curl -s -X PUT -H "Authorization: token $GH_TOKEN" "$API/contents/ci_logs/android-build.log" \
+              -d "{\"message\":\"CI: android build log\",\"content\":\"$CONTENT\",\"branch\":\"ci-debug-logs\"}" > /dev/null
+          fi
 
       - uses: actions/upload-artifact@v4
         if: success()
@@ -74,17 +85,24 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
         run: |
-          git config user.name "ci-bot"
-          git config user.email "ci@life-os.local"
-          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
-          git fetch origin ci-debug-logs 2>/dev/null || true
-          git checkout -B ci-debug-logs
-          mkdir -p ci_logs
-          tail -c 60000 /tmp/windows-build.log > ci_logs/windows-build.log
-          git add ci_logs/windows-build.log
-          git commit -m "CI: windows build log [skip ci]" || true
-          git push --force origin ci-debug-logs
+          API="https://api.github.com/repos/$REPO"
+          if ! curl -s -f -H "Authorization: token $GH_TOKEN" "$API/git/ref/heads/ci-debug-logs" > /dev/null; then
+            MAIN_SHA=$(curl -s -H "Authorization: token $GH_TOKEN" "$API/git/ref/heads/main" | python3 -c "import json,sys; print(json.load(sys.stdin)['object']['sha'])")
+            curl -s -X POST -H "Authorization: token $GH_TOKEN" "$API/git/refs" \
+              -d "{\"ref\":\"refs/heads/ci-debug-logs\",\"sha\":\"$MAIN_SHA\"}" > /dev/null
+          fi
+          tail -c 60000 /tmp/windows-build.log > /tmp/windows-build.trimmed.log
+          CONTENT=$(base64 -w0 /tmp/windows-build.trimmed.log 2>/dev/null || base64 /tmp/windows-build.trimmed.log | tr -d '\n')
+          EXISTING_SHA=$(curl -s -H "Authorization: token $GH_TOKEN" "$API/contents/ci_logs/windows-build.log?ref=ci-debug-logs" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('sha',''))" 2>/dev/null || echo "")
+          if [ -n "$EXISTING_SHA" ]; then
+            curl -s -X PUT -H "Authorization: token $GH_TOKEN" "$API/contents/ci_logs/windows-build.log" \
+              -d "{\"message\":\"CI: windows build log\",\"content\":\"$CONTENT\",\"branch\":\"ci-debug-logs\",\"sha\":\"$EXISTING_SHA\"}" > /dev/null
+          else
+            curl -s -X PUT -H "Authorization: token $GH_TOKEN" "$API/contents/ci_logs/windows-build.log" \
+              -d "{\"message\":\"CI: windows build log\",\"content\":\"$CONTENT\",\"branch\":\"ci-debug-logs\"}" > /dev/null
+          fi
 
       - uses: actions/upload-artifact@v4
         if: success()
