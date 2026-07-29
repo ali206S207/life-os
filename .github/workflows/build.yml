@@ -30,9 +30,12 @@ jobs:
 
       - name: Upload debug log on failure
         if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "ci-bot"
           git config user.email "ci@life-os.local"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
           git fetch origin ci-debug-logs 2>/dev/null || true
           git checkout -B ci-debug-logs
           mkdir -p ci_logs
@@ -69,9 +72,12 @@ jobs:
       - name: Upload debug log on failure
         if: failure()
         shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "ci-bot"
           git config user.email "ci@life-os.local"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
           git fetch origin ci-debug-logs 2>/dev/null || true
           git checkout -B ci-debug-logs
           mkdir -p ci_logs
