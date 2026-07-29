@@ -13,11 +13,42 @@ permissions:
   contents: write
 
 jobs:
-  build-android:
-    name: Android APK
+  scaffold-platforms:
+    name: Scaffold missing platform folders
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Generate any missing platform folders
+        run: flutter create --platforms=android,windows,ios,macos,linux,web --project-name life_os .
+
+      - name: Commit generated platform folders if any are new
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "ci-bot"
+          git config user.email "ci@life-os.local"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+            git commit -m "chore: scaffold missing platform folders (android/windows/ios/macos/linux/web) [skip ci]"
+            git push origin HEAD:main
+          else
+            echo "Nothing to scaffold — all platform folders already present."
+          fi
+
+  build-android:
+    name: Android APK
+    needs: scaffold-platforms
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - uses: subosito/flutter-action@v2
         with:
@@ -64,9 +95,12 @@ jobs:
 
   build-windows:
     name: Windows Build
+    needs: scaffold-platforms
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - uses: subosito/flutter-action@v2
         with:
