@@ -35,6 +35,19 @@ class DailyActionsNotifier extends StateNotifier<AsyncValue<List<DailyAction>>> 
     });
   }
 
+  void addAction({required String title, required String emoji, required int xpReward, required String time}) {
+    state.whenData((actions) {
+      final newAction = DailyAction(
+        id: DateTime.now().microsecondsSinceEpoch.toString(),
+        title: title,
+        emoji: emoji,
+        xpReward: xpReward,
+        time: time,
+      );
+      state = AsyncValue.data([...actions, newAction]);
+    });
+  }
+
   Future<void> refresh() => _load();
 }
 

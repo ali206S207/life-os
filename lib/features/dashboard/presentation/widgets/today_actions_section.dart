@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/widgets/glass_card.dart';
 import '../providers/daily_actions_provider.dart';
+import 'add_task_dialog.dart';
 
 class TodayActionsSection extends ConsumerWidget {
   const TodayActionsSection({super.key});
@@ -28,7 +29,16 @@ class TodayActionsSection extends ConsumerWidget {
       data: (actions) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Today', style: Theme.of(context).textTheme.headlineMedium),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Today', style: Theme.of(context).textTheme.headlineMedium),
+              IconButton(
+                icon: const Icon(Icons.add_circle_outline_rounded, color: AppColors.primary),
+                onPressed: () => showAddTaskDialog(context, ref),
+              ),
+            ],
+          ),
           const SizedBox(height: AppSpacing.md),
           for (final action in actions) ...[
             _DailyActionTile(action: action),

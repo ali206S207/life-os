@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/widgets/glass_card.dart';
 import '../providers/habits_provider.dart';
+import '../widgets/add_habit_sheet.dart';
 import '../widgets/habit_card.dart';
 
 class HabitsScreen extends ConsumerWidget {
@@ -14,6 +16,11 @@ class HabitsScreen extends ConsumerWidget {
     final xpToday = ref.watch(habitsXpTodayProvider);
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: AppColors.primary,
+        onPressed: () => showAddHabitSheet(context, ref),
+        child: const Icon(Icons.add_rounded),
+      ),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () => ref.read(habitsProvider.notifier).refresh(),

@@ -48,6 +48,29 @@ class HabitsNotifier extends AsyncNotifier<List<Habit>> {
     );
   }
 
+  Future<void> addHabit({
+    required String title,
+    required String emoji,
+    required String areaId,
+    required HabitDifficulty difficulty,
+    required int xpReward,
+  }) async {
+    try {
+      final created = await ref.read(habitsRepositoryProvider).createHabit(
+            title: title,
+            emoji: emoji,
+            areaId: areaId,
+            difficulty: difficulty,
+            xpReward: xpReward,
+          );
+      state.whenData((habits) {
+        state = AsyncValue.data([...habits, created]);
+      });
+    } catch (e) {
+      debugPrint('Failed to create habit: $e');
+    }
+  }
+
   Future<void> refresh() async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() => ref.read(habitsRepositoryProvider).fetchHabits());

@@ -7,6 +7,16 @@ abstract class HabitsRepository {
   /// implementation no-ops (state already lives in the Notifier); the
   /// Supabase implementation writes the row back.
   Future<void> persistToggle(Habit habit);
+
+  /// Creates a brand-new habit and returns it with its real id
+  /// (server-generated for Supabase).
+  Future<Habit> createHabit({
+    required String title,
+    required String emoji,
+    required String areaId,
+    required HabitDifficulty difficulty,
+    required int xpReward,
+  });
 }
 
 class LocalHabitsRepository implements HabitsRepository {
@@ -21,6 +31,28 @@ class LocalHabitsRepository implements HabitsRepository {
     // No-op: state already lives in the Notifier for the local/offline
     // implementation. The Supabase implementation overrides this to
     // actually write the row back.
+  }
+
+  @override
+  Future<Habit> createHabit({
+    required String title,
+    required String emoji,
+    required String areaId,
+    required HabitDifficulty difficulty,
+    required int xpReward,
+  }) async {
+    return Habit(
+      id: DateTime.now().microsecondsSinceEpoch.toString(),
+      title: title,
+      emoji: emoji,
+      areaId: areaId,
+      difficulty: difficulty,
+      xpReward: xpReward,
+      currentStreak: 0,
+      bestStreak: 0,
+      completionRate: 0,
+      missHistory: const [],
+    );
   }
 
   /// Shared seed data — also used by [SupabaseHabitsRepository] to

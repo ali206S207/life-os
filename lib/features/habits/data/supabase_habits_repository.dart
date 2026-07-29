@@ -70,4 +70,30 @@ class SupabaseHabitsRepository implements HabitsRepository {
       'last_toggled_date': DateTime.now().toIso8601String().split('T').first,
     }).eq('id', habit.id).eq('user_id', _userId);
   }
+
+  @override
+  Future<Habit> createHabit({
+    required String title,
+    required String emoji,
+    required String areaId,
+    required HabitDifficulty difficulty,
+    required int xpReward,
+  }) async {
+    final row = await _client
+        .from('lifeos_habits')
+        .insert({
+          'user_id': _userId,
+          'title': title,
+          'emoji': emoji,
+          'area_key': areaId,
+          'difficulty': difficulty.name,
+          'xp_reward': xpReward,
+          'current_streak': 0,
+          'best_streak': 0,
+          'is_done_today': false,
+        })
+        .select()
+        .single();
+    return _fromRow(row);
+  }
 }
