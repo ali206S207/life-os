@@ -1,0 +1,53 @@
+name: Build Life OS
+
+# Runs on GitHub's own machines (which have full internet access, unlike
+# this repo's dev sandbox) so we get real, installable builds without
+# anyone needing Flutter installed locally. Artifacts are attached to
+# the workflow run — see the "Actions" tab on GitHub.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  build-android:
+    name: Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - run: flutter pub get
+
+      - run: flutter build apk --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: life-os-android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 30
+
+  build-windows:
+    name: Windows Build
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - run: flutter config --enable-windows-desktop
+
+      - run: flutter pub get
+
+      - run: flutter build windows --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: life-os-windows-build
+          path: build/windows/x64/runner/Release/
+          retention-days: 30
